@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.recording-active {
+  height: 82%;
+  aspect-ratio: 1/1;
+  border-radius: 100%;
+  transition: all 0.2s ease;
+}
+
+.recording-inactive {
+  height: 20px;
+  aspect-ratio: 1/1;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.disable-button {
+  max-width: 95px;
+  background-image: none;
+  padding: 1px 4px 2px;
+}
+.RecordVideoContainer {
+  width: max-content;
+}
+.large {
+  height: 82%;
+  aspect-ratio: 1/1;
+  border-radius: 100%;
+  transition: all 0.2s ease;
+}
+
+.small {
+  height: 20px;
+  aspect-ratio: 1/1;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.remove-arrow {
+  max-width: 95px;
+  background-image: none;
+  padding-top: 1px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
