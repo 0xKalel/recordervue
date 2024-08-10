@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, nextTick, watch, defineExpose } from 'vue';
+import { ref, reactive, nextTick, watch } from 'vue';
 import Recorder from '../components/Recorder.vue';
 import mime from 'mime-types';
 
