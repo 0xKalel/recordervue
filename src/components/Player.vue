@@ -11,9 +11,9 @@
     <Recorder
       v-else
       @set-video="handleRecordedVideo"
-      @error="handleError"
+      @error="emitError"
       :maxDuration="maxDuration"
-      :style="'max-height:'+maxHeight+'px'"
+      :style="{ maxHeight: maxHeight + 'px' }"
     />
   </div>
 </template>
@@ -24,111 +24,64 @@ import Recorder from '../components/Recorder.vue';
 import mime from 'mime-types';
 
 const props = defineProps({
-  maxDuration:{
-    type: Number,
-    required:true
-  },
-  maxHeight:{
-    type: Number,
-    required:true
-  },
-  maxFileSize:{
-    type: Number,
-    required:true
-  },
-});
-
-const isRecording = ref(false);
-const videoAspectRatio = ref(null);
-const videoSourceUrl = ref('');
-const videoElement = ref(null);
-
-const videoData = reactive({
-  file: null,
-  isRecorded: false,
-  mimeType: null
+  maxDuration: { type: Number, required: true },
+  maxHeight: { type: Number, required: true },
+  maxFileSize: { type: Number, required: true },
 });
 
 const emit = defineEmits(['error', 'videoRecorded']);
 
-const handleError = (error) => {
-  emit('error', error);
-};
+const videoElement = ref(null);
+const videoSourceUrl = ref('');
+const videoData = reactive({ file: null, mimeType: null });
+const isRecording = ref(false);
 
 const resetVideoData = () => {
   videoData.file = null;
-  videoData.isRecorded = false;
   videoData.mimeType = null;
-  videoAspectRatio.value = null;
+  videoSourceUrl.value && URL.revokeObjectURL(videoSourceUrl.value);
   videoSourceUrl.value = '';
-
-  if (videoElement.value) {
-    videoElement.value.src = '';
-  }
-
-  if (videoSourceUrl.value) {
-    URL.revokeObjectURL(videoSourceUrl.value);
-    videoSourceUrl.value = '';
-  }
 };
 
-const handleRecordedVideo = async (data) => {
-  videoData.isRecorded = true;
-  isRecording.value = false;
-  videoAspectRatio.value = data.aspectRatio;
-  videoData.mimeType = data.blob.type;
-
-  const extension = mime.extension(videoData.mimeType);
-  const filename = `record_${Date.now()}.${extension}`;
-  const mediaBlob = await fetch(URL.createObjectURL(data.blob)).then(response => response.blob());
-  videoData.file = new File([mediaBlob], filename, { type: videoData.mimeType });
-
-  await nextTick();
-  videoSourceUrl.value = URL.createObjectURL(videoData.file);
-  
-  emit('videoRecorded', videoData);
-};
+const emitError = (message) => emit('error', message);
 
 const validateVideoFile = () => {
-  const { duration, videoWidth, videoHeight } = videoElement.value || {};
+  const { duration } = videoElement.value || {};
   const fileSizeMB = videoData.file.size / (1024 * 1024);
 
   if (fileSizeMB > props.maxFileSize) {
     resetVideoData();
-    handleError(`The video must be less than ${props.maxFileSize}MB.`);
-    return;
+    return emitError(`Video size must be less than ${props.maxFileSize}MB.`);
   }
 
   if (duration > props.maxDuration) {
     resetVideoData();
-    handleError(`The video duration must be less than ${props.maxDuration}s.`);
-    return;
+    return emitError(`Video duration must be less than ${props.maxDuration}s.`);
   }
 };
 
-watch(videoSourceUrl, () => {
-  if (videoElement.value) {
-    const onLoadedMetadata = () => {
-      if (videoElement.value.duration === Infinity) {
-        videoElement.value.currentTime = 1e101;
-        videoElement.value.ontimeupdate = () => {
-          videoElement.value.currentTime = 0;
-          videoElement.value.ontimeupdate = null;
-          validateVideoFile();
-        };
-      } else {
-        validateVideoFile();
-      }
-    };
-    
-    videoElement.value.addEventListener('loadedmetadata', onLoadedMetadata);
+const handleRecordedVideo = async (data) => {
+  const mimeType = data.blob.type;
+  const filename = `record_${Date.now()}.${mime.extension(mimeType)}`;
+  const mediaBlob = await fetch(URL.createObjectURL(data.blob)).then(res => res.blob());
+  videoData.file = new File([mediaBlob], filename, { type: mimeType });
+
+  await nextTick();
+  videoSourceUrl.value = URL.createObjectURL(videoData.file);
+
+  validateVideoFile();
+  emit('videoRecorded', videoData);
+};
+
+watch(videoSourceUrl, (newUrl, oldUrl) => {
+  if (newUrl && videoElement.value) {
+    const handleMetadataLoaded = () => validateVideoFile();
+    videoElement.value.addEventListener('loadedmetadata', handleMetadataLoaded);
     watch(() => videoSourceUrl.value, () => {
-      videoElement.value?.removeEventListener('loadedmetadata', onLoadedMetadata);
+      videoElement.value?.removeEventListener('loadedmetadata', handleMetadataLoaded);
     });
   }
 });
 
-defineExpose({
-  resetVideoData,
-});
+defineExpose({ resetVideoData });
 </script>
