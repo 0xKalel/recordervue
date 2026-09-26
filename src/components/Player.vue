@@ -11,7 +11,7 @@
     <Recorder
       v-else
       @set-video="handleRecordedVideo"
-      @error="emitError"
+      @handle-error="emitError"
       :maxDuration="maxDuration"
       :style="{ maxHeight: maxHeight + 'px' }"
     />

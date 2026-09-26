@@ -1,7 +1,7 @@
 <template>
   <div :style="selectedAspectRatio.style" class="relative-auto">
     <div class="relative h-full w-full overflow-hidden">
-      <video ref="videoRecording" autoplay playsinline class="video-js h-full w-full object-cover rounded-2xl overflow-hidden"></video>
+      <video ref="videoRecording" autoplay muted playsinline class="video-js h-full w-full bg-gray-900 object-cover rounded-2xl overflow-hidden"></video>
 
       <div v-if="!isRecording" class="absolute top-3 right-2 flex flex-col items-end gap-1 w-28">
         <AspectRatioMenu :aspectRatios="aspectRatios" :selectedAspectRatio="selectedAspectRatio" @select="setAspectRatio" />
