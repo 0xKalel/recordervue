@@ -4,6 +4,8 @@ In-browser video recording for Vue 3, built on RecordRTC and video.js.
 
 Records from the camera with configurable limits, previews the result, and hands back the recording as a blob URL with its mime type — ready to upload or play.
 
+**Try it live: [0xkalel.github.io/recordervue](https://0xkalel.github.io/recordervue/)** (camera permission required; nothing leaves your browser).
+
 ## Features
 
 - Configurable maximum duration, file size and video height
