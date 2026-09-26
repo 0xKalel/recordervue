@@ -55,7 +55,13 @@ const onError = (error) => {
         class="mx-auto mt-10 max-w-md rounded-lg border border-red-300 bg-red-50 px-5 py-4 text-center text-sm text-red-800"
         role="alert"
       >
-        {{ errorMessage }}
+        <p>{{ errorMessage }}</p>
+        <button
+          @click="resetPlayer"
+          class="mt-3 rounded border border-red-300 bg-white px-4 py-1.5 font-semibold text-gray-800 hover:bg-gray-100"
+        >
+          Try again
+        </button>
       </div>
 
       <template v-else>

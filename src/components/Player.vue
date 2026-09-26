@@ -54,7 +54,8 @@ const validateVideoFile = () => {
     return emitError(`Video size must be less than ${props.maxFileSize}MB.`);
   }
 
-  if (duration > props.maxDuration) {
+  // Streamed WebM blobs report duration as Infinity/NaN; only a real value can fail this check.
+  if (Number.isFinite(duration) && duration > props.maxDuration) {
     resetVideoData();
     return emitError(`Video duration must be less than ${props.maxDuration}s.`);
   }
