@@ -8,7 +8,7 @@
       </div>
 
       <div class="absolute bottom-5 left-0 right-0 m-auto flex items-center justify-center gap-3 px-2 h-[70px] w-full">
-        <DeviceSelector v-if="!isRecording && currentVideoDevice" :sources="sources.video" :selectedDevice="currentVideoDevice" :sourceType="'Video'" />
+        <DeviceSelector v-if="!isRecording && currentVideoDevice" :sources="sources.video" :selectedDevice="currentVideoDevice" :sourceType="'Video'" @update-source="(id) => { currentVideoDevice = id; updateSource(); }" />
 
         <div @click="toggleRecording" class="relative cursor-pointer bg-white rounded-full h-[48px] aspect-square flex items-center justify-evenly">
           <div v-if="isRecording" class="absolute flex items-center gap-2 bottom-16 w-max">
@@ -21,7 +21,7 @@
           <div :class="isRecording ? 'small' : 'large'" class="bg-red-700 border-2 border-solid"></div>
         </div>
 
-        <DeviceSelector v-if="!isRecording && currentAudioDevice" :sources="sources.audio" :selectedDevice="currentAudioDevice" :sourceType="'Audio'" />
+        <DeviceSelector v-if="!isRecording && currentAudioDevice" :sources="sources.audio" :selectedDevice="currentAudioDevice" :sourceType="'Audio'" @update-source="(id) => { currentAudioDevice = id; updateSource(); }" />
       </div>
     </div>
   </div>

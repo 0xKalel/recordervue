@@ -25,6 +25,8 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
   sources: {
     type: Array,
