@@ -41,3 +41,7 @@ npm run dev
 ```
 
 `videoRecorded` delivers the finished video's blob URL and mime type; `error` reports permission and device problems.
+
+## How this was built
+
+Khalil wrote the original component in August 2024, and seven patches from [@mohsenuss91](https://github.com/mohsenuss91) were merged as PRs #1–#7 in September 2024. The September 2026 refresh (the live demo, camera error handling, the WebM duration fix, device switching and this README) was done with Claude Code, so those commits carry a `Co-Authored-By: Claude` trailer.
